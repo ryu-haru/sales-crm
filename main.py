@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 from typing import Optional
 import csv, io, sqlite3
 from datetime import datetime
-from database import get_db, init_db, DB_PATH
+from database import get_db, init_db, sync_contacts_to_gist, is_db_ready, DB_PATH
 
 app = FastAPI(title="営業管理CRM")
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -99,14 +99,11 @@ async def index(
     pref: str = "", city: str = "", keyword: str = "",
     industry: str = "", status: str = "", page: int = 1
 ):
+    db_ready = is_db_ready()
     rows, total = search_companies(pref, city, keyword, industry, status, page)
     total_pages = (total + PAGE_SIZE - 1) // PAGE_SIZE
     prefs = get_prefs()
     stats = get_stats()
-    _c = sqlite3.connect(DB_PATH) if DB_PATH.exists() else None
-    db_ready = bool(_c and _c.execute("SELECT COUNT(*) FROM companies").fetchone()[0] > 0)
-    if _c:
-        _c.close()
 
     return templates.TemplateResponse("index.html", {
         "request": request,
@@ -164,7 +161,7 @@ async def update_company(
     """, (company_id, status, 担当者, メール, 電話, 業種, メモ, 最終連絡日, now))
     conn.commit()
     conn.close()
-    # Back to search
+    sync_contacts_to_gist()
     referer = f"/company/{company_id}"
     return RedirectResponse(referer, status_code=303)
 
@@ -192,6 +189,7 @@ async def bulk_update(
         """, (int(cid), status, 担当者, now))
     conn.commit()
     conn.close()
+    sync_contacts_to_gist()
     return RedirectResponse("/", 303)
 
 @app.get("/export")

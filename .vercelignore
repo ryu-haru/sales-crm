@@ -1,0 +1,16 @@
+*.db
+*.db-shm
+*.db-wal
+*.db.gz
+__pycache__/
+*.pyc
+.git/
+railway.json
+Procfile
+nixpacks.toml
+startup.sh
+import_csv.py
+upload_to_gdrive.py
+railway_deploy.py
+railway_api.py
+vercel_setup.py

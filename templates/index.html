@@ -19,8 +19,13 @@
 </header>
 
 {% if not db_ready %}
-<div class="alert alert-warn">
-  ⚠️ データがまだインポートされていません。<code>python import_csv.py</code> を実行してください。
+<div class="alert alert-warn" style="text-align:center;padding:1.5rem">
+  <strong>データベースを準備中です...</strong><br>
+  バックグラウンドで 660MB のデータをダウンロードしています。<br>
+  数分後にページを再読み込みしてください。<br>
+  <small style="color:#888">（Vercel の /tmp にキャッシュされるため、次回以降は即時表示されます）</small>
+  <br><br>
+  <button onclick="location.reload()" style="padding:0.5rem 1.5rem;cursor:pointer">再読み込み</button>
 </div>
 {% endif %}
 
