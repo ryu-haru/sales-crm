@@ -1,7 +1,8 @@
-import sqlite3
+import sqlite3, os
 from pathlib import Path
 
-DB_PATH = Path(__file__).parent / "sales.db"
+_data_dir = Path(os.environ.get("DATA_DIR", str(Path(__file__).parent)))
+DB_PATH = _data_dir / "sales.db"
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)

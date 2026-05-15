@@ -2,7 +2,7 @@
 import_csv.py - houjin_companies.csv を sales.db にインポート（初回のみ）
 Usage: python import_csv.py [--csv /path/to/houjin_companies.csv]
 """
-import csv, sqlite3, sys, time, argparse
+import csv, sqlite3, sys, time, argparse, os
 from pathlib import Path
 from database import DB_PATH, init_db
 
@@ -35,7 +35,7 @@ def guess_industry(name: str) -> str:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--csv", default=r"C:\Users\Owner\.company\secretary\notes\houjin_companies.csv")
+    parser.add_argument("--csv", default=os.environ.get("CSV_PATH", r"C:\Users\Owner\.company\secretary\notes\houjin_companies.csv"))
     args = parser.parse_args()
 
     csv_path = Path(args.csv)
