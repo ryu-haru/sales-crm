@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>営業管理CRM</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <h1>📋 営業管理CRM</h1>
+    <div class="stats">
+      {% for s, n in stats.items() %}
+      <a href="/?status={{ s }}" class="stat-badge stat-{{ s|replace(' ','') }}">{{ s }} <span>{{ "{:,}".format(n) }}</span></a>
+      {% endfor %}
+    </div>
+  </div>
+</header>
+
+{% if not db_ready %}
+<div class="alert alert-warn">
+  ⚠️ データがまだインポートされていません。<code>python import_csv.py</code> を実行してください。
+</div>
+{% endif %}
+
+<main>
+  <!-- 検索フォーム -->
+  <form method="get" action="/" class="search-form">
+    <select name="pref">
+      <option value="">都道府県（全て）</option>
+      {% for p in prefs %}
+      <option value="{{ p }}" {% if p == pref %}selected{% endif %}>{{ p }}</option>
+      {% endfor %}
+    </select>
+    <input type="text" name="city" value="{{ city }}" placeholder="市区町村">
+    <input type="text" name="keyword" value="{{ keyword }}" placeholder="会社名キーワード">
+    <input type="text" name="industry" value="{{ industry }}" placeholder="業種">
+    <select name="status">
+      <option value="">ステータス（全て）</option>
+      {% for s in statuses %}
+      <option value="{{ s }}" {% if s == status %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary">🔍 検索</button>
+    <a href="/" class="btn btn-gray">クリア</a>
+    <a href="/export?pref={{ pref }}&city={{ city }}&keyword={{ keyword }}&industry={{ industry }}&status={{ status }}" class="btn btn-green">⬇ CSV出力</a>
+  </form>
+
+  <div class="result-info">
+    検索結果: <strong>{{ "{:,}".format(total) }}社</strong>
+    {% if total > 50 %}（{{ page }}/{{ total_pages }}ページ）{% endif %}
+  </div>
+
+  <!-- 一括更新フォーム -->
+  <form method="post" action="/bulk-update" id="bulk-form">
+    <div class="bulk-bar" id="bulk-bar" style="display:none">
+      <span id="bulk-count">0</span>社選択中
+      <select name="status">
+        {% for s in statuses %}
+        <option value="{{ s }}">{{ s }}</option>
+        {% endfor %}
+      </select>
+      <input type="text" name="担当者" placeholder="担当者（省略可）">
+      <button type="submit" class="btn btn-primary">一括更新</button>
+      <button type="button" onclick="clearAll()" class="btn btn-gray">解除</button>
+    </div>
+    <input type="hidden" name="ids" id="bulk-ids">
+
+    <!-- テーブル -->
+    <table class="company-table">
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="check-all" onclick="toggleAll(this)"></th>
+          <th>会社名</th>
+          <th>都道府県</th>
+          <th>市区町村</th>
+          <th>業種</th>
+          <th>ステータス</th>
+          <th>担当者</th>
+          <th>最終連絡日</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+        <tr class="status-{{ r.ステータス|replace(' ','') }}">
+          <td><input type="checkbox" class="row-check" value="{{ r.id }}" onchange="updateBulk()"></td>
+          <td><a href="/company/{{ r.id }}">{{ r.名称 }}</a></td>
+          <td>{{ r.都道府県 }}</td>
+          <td>{{ r.市区町村 }}</td>
+          <td>{{ r.業種 or '-' }}</td>
+          <td><span class="badge badge-{{ r.ステータス|replace(' ','') }}">{{ r.ステータス }}</span></td>
+          <td>{{ r.担当者 or '-' }}</td>
+          <td>{{ r.最終連絡日 or '-' }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8" class="empty">該当する会社が見つかりません</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </form>
+
+  <!-- ページネーション -->
+  {% if total_pages > 1 %}
+  <div class="pagination">
+    {% if page > 1 %}
+    <a href="/?pref={{ pref }}&city={{ city }}&keyword={{ keyword }}&industry={{ industry }}&status={{ status }}&page={{ page-1 }}" class="btn btn-gray">← 前</a>
+    {% endif %}
+    <span>{{ page }} / {{ total_pages }}</span>
+    {% if page < total_pages %}
+    <a href="/?pref={{ pref }}&city={{ city }}&keyword={{ keyword }}&industry={{ industry }}&status={{ status }}&page={{ page+1 }}" class="btn btn-gray">次 →</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</main>
+
+<script>
+function updateBulk() {
+  const checks = document.querySelectorAll('.row-check:checked');
+  const ids = Array.from(checks).map(c => c.value).join(',');
+  document.getElementById('bulk-ids').value = ids;
+  document.getElementById('bulk-count').textContent = checks.length;
+  document.getElementById('bulk-bar').style.display = checks.length > 0 ? 'flex' : 'none';
+}
+function toggleAll(cb) {
+  document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
+  updateBulk();
+}
+function clearAll() {
+  document.querySelectorAll('.row-check, #check-all').forEach(c => c.checked = false);
+  updateBulk();
+}
+</script>
+</body>
+</html>

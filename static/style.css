@@ -1,0 +1,75 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; font-size: 14px; background: #f5f6fa; color: #333; }
+
+header { background: #1a1a2e; color: #fff; padding: 12px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.3); }
+.header-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+header h1 { font-size: 1.2rem; white-space: nowrap; }
+
+.stats { display: flex; gap: 8px; flex-wrap: wrap; }
+.stat-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; text-decoration: none; color: #fff; background: #444; transition: opacity .2s; }
+.stat-badge:hover { opacity: 0.8; }
+.stat-badge span { font-weight: bold; }
+.stat-badge.stat-未対応 { background: #666; }
+.stat-badge.stat-営業中 { background: #2563eb; }
+.stat-badge.stat-営業済み { background: #7c3aed; }
+.stat-badge.stat-提携済み { background: #059669; }
+.stat-badge.stat-NG { background: #dc2626; }
+.stat-badge.stat-保留 { background: #d97706; }
+
+main { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+.alert-warn { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 20px; margin: 0 auto; max-width: 1400px; }
+
+.search-form { background: #fff; padding: 16px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+.search-form select, .search-form input[type=text] { padding: 7px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; min-width: 120px; }
+
+.btn { padding: 7px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; border: none; text-decoration: none; display: inline-block; white-space: nowrap; }
+.btn-primary { background: #2563eb; color: #fff; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-gray { background: #e5e7eb; color: #333; }
+.btn-gray:hover { background: #d1d5db; }
+.btn-green { background: #059669; color: #fff; }
+.btn-green:hover { background: #047857; }
+
+.result-info { margin-bottom: 10px; color: #555; }
+
+.bulk-bar { background: #1e3a8a; color: #fff; padding: 10px 16px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.bulk-bar select, .bulk-bar input { padding: 5px 8px; border-radius: 4px; border: none; font-size: 13px; }
+
+.company-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+.company-table th { background: #1a1a2e; color: #fff; padding: 10px 12px; text-align: left; font-weight: 500; white-space: nowrap; }
+.company-table td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+.company-table tr:last-child td { border-bottom: none; }
+.company-table tr:hover { background: #f8faff; }
+.company-table a { color: #2563eb; text-decoration: none; font-weight: 500; }
+.company-table a:hover { text-decoration: underline; }
+.empty { text-align: center; color: #999; padding: 40px; }
+
+.badge { padding: 3px 10px; border-radius: 10px; font-size: 0.8rem; font-weight: 600; color: #fff; white-space: nowrap; }
+.badge-未対応 { background: #9ca3af; }
+.badge-営業中 { background: #2563eb; }
+.badge-営業済み { background: #7c3aed; }
+.badge-提携済み { background: #059669; }
+.badge-NG { background: #dc2626; }
+.badge-保留 { background: #d97706; }
+
+.pagination { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 20px; }
+
+/* Company detail */
+.breadcrumb { margin-bottom: 16px; }
+.breadcrumb a { color: #2563eb; text-decoration: none; }
+.company-card { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+.company-card h2 { font-size: 1.3rem; margin-bottom: 8px; }
+.company-meta { color: #555; display: flex; gap: 12px; align-items: center; margin-top: 4px; }
+
+.edit-form { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-grid label, .edit-form label { display: flex; flex-direction: column; gap: 5px; font-weight: 500; font-size: 13px; color: #555; }
+.form-grid input, .form-grid select, .edit-form textarea, .edit-form input, .edit-form select { padding: 8px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; width: 100%; }
+.edit-form textarea { resize: vertical; font-family: inherit; }
+.form-actions { margin-top: 20px; display: flex; gap: 10px; }
+
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .search-form select, .search-form input { min-width: 100%; }
+}

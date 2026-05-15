@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ c.名称 }} - 営業管理CRM</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <h1><a href="/" style="color:inherit;text-decoration:none">📋 営業管理CRM</a></h1>
+  </div>
+</header>
+<main style="max-width:700px">
+  <div class="breadcrumb"><a href="/">← 一覧に戻る</a></div>
+
+  <div class="company-card">
+    <h2>{{ c.名称 }}</h2>
+    <div class="company-meta">
+      <span>{{ c.都道府県 }} {{ c.市区町村 }} {{ c.丁目番地等 }}</span>
+      <span class="badge badge-{{ c.ステータス|replace(' ','') }}">{{ c.ステータス }}</span>
+    </div>
+    {% if c.法人番号 %}
+    <div class="company-meta" style="font-size:0.85em;color:#666">
+      法人番号: {{ c.法人番号 }}
+    </div>
+    {% endif %}
+  </div>
+
+  <form method="post" action="/company/{{ c.id }}/update" class="edit-form">
+    <div class="form-grid">
+      <label>ステータス
+        <select name="status">
+          {% for s in statuses %}
+          <option value="{{ s }}" {% if s == c.ステータス %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>担当者
+        <input type="text" name="担当者" value="{{ c.担当者 }}" placeholder="氏名">
+      </label>
+      <label>業種
+        <input type="text" name="業種" value="{{ c.業種_ct }}" placeholder="IT・製造・不動産など">
+      </label>
+      <label>最終連絡日
+        <input type="date" name="最終連絡日" value="{{ c.最終連絡日 }}">
+      </label>
+      <label>メール
+        <input type="email" name="メール" value="{{ c.メール }}" placeholder="contact@example.com">
+      </label>
+      <label>電話
+        <input type="text" name="電話" value="{{ c.電話 }}" placeholder="03-XXXX-XXXX">
+      </label>
+    </div>
+    <label style="display:block;margin-top:1rem">メモ
+      <textarea name="メモ" rows="4" placeholder="営業メモ・対応履歴など">{{ c.メモ }}</textarea>
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">💾 保存</button>
+      <a href="/" class="btn btn-gray">キャンセル</a>
+    </div>
+  </form>
+</main>
+</body>
+</html>
